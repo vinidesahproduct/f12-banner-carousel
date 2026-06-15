@@ -196,9 +196,7 @@
       padding: 12px 32px;
       border-radius: 8px;
       border: none;
-      background: rgba(255,255,255,0.18);
-      backdrop-filter: blur(6px);
-      -webkit-backdrop-filter: blur(6px);
+      background: #5acd03;
       color: #fff;
       font-family: sans-serif;
       font-size: 13px;
@@ -209,10 +207,10 @@
       text-decoration: none;
       white-space: nowrap;
       display: block;
-      box-shadow: 0 2px 16px rgba(0,0,0,0.5);
+      box-shadow: 0 2px 16px rgba(0,0,0,0.4);
       transition: background 0.2s;
     }
-    .wbc-story-cta:hover { background: rgba(255,255,255,0.3); }
+    .wbc-story-cta:hover { background: #4db502; }
 
     /* ── THUMBNAIL STRIP ── */
     .wbc-thumbs {
@@ -323,19 +321,20 @@
 <script>
 (function () {
 
+  // cta: 'participe' = horizontal/landscape banners | 'saiba' = vertical/portrait banners
   var BANNERS = [
-    { href: 'https://f12.bet.br/promotions/freebet-20',              src: 'https://f12promo.com/wp-content/uploads/2026/06/10.06-FREEBET-20-F12.jpg',            alt: 'Freebet 20' },
-    { href: 'https://f12.bet.br/promotions/selecao-gol-premiado',    src: 'https://f12promo.com/wp-content/uploads/2026/06/11.06-gol-premiado-f12.jpg',           alt: 'Gol Premiado' },
-    { href: '/promotions/indique-e-ganhe',                           src: 'https://f12promo.com/wp-content/uploads/2026/04/indique-e-ganhe.png',                  alt: 'Indique e Ganhe' },
-    { href: '/promotions/super-odds',                                src: 'https://f12promo.com/wp-content/uploads/2026/04/5.Superodds.png',                      alt: 'Super Odds' },
-    { href: '/promotions/cashout',                                   src: 'https://f12promo.com/wp-content/uploads/2026/04/3.Cashout.png',                        alt: 'Cashout' },
-    { href: '/promotions/multipla-incomparavel',                     src: 'https://f12promo.com/wp-content/uploads/2026/04/4.Multipla.png',                       alt: 'Múltipla Incomparável' },
-    { href: '/promotions/antecipado-nba',                            src: 'https://f12promo.com/wp-content/uploads/2026/04/6.Pagamento-Antecipado-basket.png',    alt: 'Pagamento Antecipado NBA' },
-    { href: '/promotions/pagamento-antecipado',                      src: 'https://f12promo.com/wp-content/uploads/2026/04/1.Pagamento-Antecipado.png',           alt: 'Pagamento Antecipado' },
-    { href: 'https://f12.bet.br/sports/basquete/nba/c-2980',         src: 'https://f12promo.com/wp-content/uploads/2026/05/nba.png',                             alt: 'NBA' },
-    { href: '/promotions/criar-aposta',                              src: 'https://f12promo.com/wp-content/uploads/2026/04/2.Criar-Aposta.png',                   alt: 'Criar Aposta' },
-    { href: '/sports/futebol/brasileirao-serie-a/c-11318',           src: 'https://f12promo.com/wp-content/uploads/2026/05/1.Pagamento-Antecipado.png',           alt: 'Brasileirão Série A' },
-    { href: 'https://f12.bet.br/betting-terms',                      src: 'https://f12promo.com/wp-content/uploads/2026/05/Termos.png',                          alt: 'Termos e Condições' },
+    { href: 'https://f12.bet.br/promotions/freebet-20',              src: 'https://f12promo.com/wp-content/uploads/2026/06/10.06-FREEBET-20-F12.jpg',            alt: 'Freebet 20',              cta: 'participe' },
+    { href: 'https://f12.bet.br/promotions/selecao-gol-premiado',    src: 'https://f12promo.com/wp-content/uploads/2026/06/11.06-gol-premiado-f12.jpg',           alt: 'Gol Premiado',            cta: 'participe' },
+    { href: '/promotions/indique-e-ganhe',                           src: 'https://f12promo.com/wp-content/uploads/2026/04/indique-e-ganhe.png',                  alt: 'Indique e Ganhe',         cta: 'saiba' },
+    { href: '/promotions/super-odds',                                src: 'https://f12promo.com/wp-content/uploads/2026/04/5.Superodds.png',                      alt: 'Super Odds',              cta: 'saiba' },
+    { href: '/promotions/cashout',                                   src: 'https://f12promo.com/wp-content/uploads/2026/04/3.Cashout.png',                        alt: 'Cashout',                 cta: 'saiba' },
+    { href: '/promotions/multipla-incomparavel',                     src: 'https://f12promo.com/wp-content/uploads/2026/04/4.Multipla.png',                       alt: 'Múltipla Incomparável',   cta: 'saiba' },
+    { href: '/promotions/antecipado-nba',                            src: 'https://f12promo.com/wp-content/uploads/2026/04/6.Pagamento-Antecipado-basket.png',    alt: 'Pagamento Antecipado NBA',cta: 'saiba' },
+    { href: '/promotions/pagamento-antecipado',                      src: 'https://f12promo.com/wp-content/uploads/2026/04/1.Pagamento-Antecipado.png',           alt: 'Pagamento Antecipado',    cta: 'saiba' },
+    { href: 'https://f12.bet.br/sports/basquete/nba/c-2980',         src: 'https://f12promo.com/wp-content/uploads/2026/05/nba.png',                             alt: 'NBA',                     cta: 'participe' },
+    { href: '/promotions/criar-aposta',                              src: 'https://f12promo.com/wp-content/uploads/2026/04/2.Criar-Aposta.png',                   alt: 'Criar Aposta',            cta: 'saiba' },
+    { href: '/sports/futebol/brasileirao-serie-a/c-11318',           src: 'https://f12promo.com/wp-content/uploads/2026/05/1.Pagamento-Antecipado.png',           alt: 'Brasileirão Série A',     cta: 'participe' },
+    { href: 'https://f12.bet.br/betting-terms',                      src: 'https://f12promo.com/wp-content/uploads/2026/05/Termos.png',                          alt: 'Termos e Condições',      cta: 'saiba' },
   ];
 
   var STORY_DURATION = 8000;
@@ -480,6 +479,7 @@
     var b = BANNERS[idx];
     storyImg.style.backgroundImage = 'url("' + b.src + '")';
     storyCta.href = b.href;
+    storyCta.textContent = b.cta === 'participe' ? 'Clique e Participe' : 'Saiba Mais';
     animateBar(idx);
     updateArrows(idx);
     updateThumbActive(idx);
