@@ -11,18 +11,22 @@
     /* ── CAROUSEL ── */
     #wbc { position: relative; width: 100%; }
     .wbc-wrapper { overflow: hidden; width: 100%; }
+
+    @keyframes wbc-scroll {
+      from { transform: translateX(0); }
+      to   { transform: translateX(-50%); }
+    }
+
     .wbc-track {
       display: flex;
       gap: 8px;
-      overflow-x: auto;
-      scroll-behavior: smooth;
-      scrollbar-width: none;
-      -ms-overflow-style: none;
-      touch-action: pan-x;
+      width: max-content;
+      will-change: transform;
+      animation: wbc-scroll 30s linear infinite;
       cursor: grab;
     }
-    .wbc-track::-webkit-scrollbar { display: none; }
-    .wbc-track.dragging { cursor: grabbing; scroll-behavior: auto; }
+    .wbc-track.paused  { animation-play-state: paused; }
+    .wbc-track.dragging { cursor: grabbing; animation-play-state: paused; }
     .wbc-slide { flex: 0 0 auto; }
     .wbc-slide img {
       display: block;
@@ -353,58 +357,93 @@
   });
 
   // ── CAROUSEL BEHAVIOR ──
-  var btnPrev = document.getElementById('wbc-prev');
-  var btnNext = document.getElementById('wbc-next');
-  var SCROLL_AMOUNT = 300;
-  var SPEED = 0.5;
-  var autoPaused = false;
+  var btnPrev    = document.getElementById('wbc-prev');
+  var btnNext    = document.getElementById('wbc-next');
+  var STEP       = 300; // px per button click
+  var DURATION   = 30;  // seconds for full loop
   var isDragging = false;
-  var startX = 0;
-  var startScroll = 0;
-  var halfWidth = 0;
+  var dragStartX = 0;
+  var dragStartTX = 0; // translateX at drag start
 
-  function initInfinite() {
-    track.querySelectorAll('.wbc-slide').forEach(function (s) {
-      var clone = s.cloneNode(true);
-      clone.removeAttribute('data-index');
-      track.appendChild(clone);
-    });
-    halfWidth = track.scrollWidth / 2;
+  // Clone slides for seamless loop
+  Array.from(track.querySelectorAll('.wbc-slide')).forEach(function (s) {
+    var clone = s.cloneNode(true);
+    clone.removeAttribute('data-index');
+    track.appendChild(clone);
+  });
+
+  // Set duration based on content width for consistent speed (~30px/s)
+  requestAnimationFrame(function () {
+    var halfW = track.scrollWidth / 2;
+    DURATION = halfW / 30;
+    track.style.animationDuration = DURATION + 's';
+  });
+
+  // Pause / resume helpers
+  function pauseAnim()  { track.classList.add('paused'); }
+  function resumeAnim() { track.classList.remove('paused'); }
+
+  // Get current translateX from computed style
+  function getCurrentTX() {
+    var t = window.getComputedStyle(track).transform;
+    if (!t || t === 'none') return 0;
+    var m = t.match(/matrix\(([^)]+)\)/);
+    return m ? parseFloat(m[1].split(',')[4]) : 0;
   }
 
-  function autoScroll() {
-    if (!autoPaused && !isDragging) {
-      track.scrollLeft += SPEED;
-      if (track.scrollLeft >= halfWidth) track.scrollLeft -= halfWidth;
-    }
-    requestAnimationFrame(autoScroll);
+  // Jump to an absolute pixel offset in the loop
+  function jumpTo(px) {
+    var halfW = track.scrollWidth / 2;
+    px = ((px % halfW) + halfW) % halfW;
+    var progress = px / halfW;
+    track.style.animationDelay = -(progress * DURATION) + 's';
+    resumeAnim();
   }
 
-  btnPrev.addEventListener('click', function () { track.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' }); });
-  btnNext.addEventListener('click', function () { track.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' }); });
-  track.addEventListener('mouseenter', function () { autoPaused = true; });
-  track.addEventListener('mouseleave', function () { autoPaused = false; });
-  track.addEventListener('touchstart', function () { autoPaused = true; }, { passive: true });
-  track.addEventListener('touchend', function () { autoPaused = false; });
+  // Hover pause (desktop)
+  track.addEventListener('mouseenter', pauseAnim);
+  track.addEventListener('mouseleave', resumeAnim);
+
+  // Touch pause (mobile) — brief pause while finger is down; NOT during auto-scroll
+  track.addEventListener('touchstart', pauseAnim, { passive: true });
+  track.addEventListener('touchend',   resumeAnim);
+
+  // Nav buttons
+  btnPrev.addEventListener('click', function () {
+    jumpTo(-getCurrentTX() - STEP);
+  });
+  btnNext.addEventListener('click', function () {
+    jumpTo(-getCurrentTX() + STEP);
+  });
+
+  // Drag to scroll (desktop)
   track.addEventListener('mousedown', function (e) {
-    isDragging = true; startX = e.pageX; startScroll = track.scrollLeft;
+    isDragging = true;
+    dragStartX  = e.pageX;
+    dragStartTX = getCurrentTX();
+    pauseAnim();
     track.classList.add('dragging');
   });
   document.addEventListener('mousemove', function (e) {
     if (!isDragging) return;
-    track.scrollLeft = startScroll - (e.pageX - startX);
+    var delta = e.pageX - dragStartX;
+    track.style.transform = 'translateX(' + (dragStartTX + delta) + 'px)';
   });
-  document.addEventListener('mouseup', function () {
-    isDragging = false; track.classList.remove('dragging');
+  document.addEventListener('mouseup', function (e) {
+    if (!isDragging) return;
+    isDragging = false;
+    track.classList.remove('dragging');
+    track.style.transform = '';
+    var delta = e.pageX - dragStartX;
+    jumpTo(-dragStartTX - delta);
   });
+
+  // Click → open story (only if not dragged)
   track.addEventListener('click', function (e) {
-    if (Math.abs(track.scrollLeft - startScroll) > 5) return;
+    if (Math.abs(e.pageX - dragStartX) > 5) return;
     var slide = e.target.closest('[data-index]');
     if (slide) openStory(parseInt(slide.dataset.index, 10));
   });
-
-  initInfinite();
-  requestAnimationFrame(autoScroll);
 
   // ── STORY MODAL ──
   var modal      = document.getElementById('wbc-modal');
