@@ -194,42 +194,64 @@
   var track = document.querySelector('.wbc-track');
   var btnPrev = document.querySelector('.wbc-prev');
   var btnNext = document.querySelector('.wbc-next');
-
   var SCROLL_AMOUNT = 300;
+  var SPEED = 0.5; // px per frame
+  var paused = false;
+  var isDragging = false;
+  var startX = 0;
+  var startScroll = 0;
+  var halfWidth = 0;
 
-  function updateButtons() {
-    btnPrev.classList.toggle('hidden', track.scrollLeft <= 2);
-    btnNext.classList.toggle('hidden', track.scrollLeft + track.clientWidth >= track.scrollWidth - 2);
+  // Clone slides for infinite loop
+  function initInfinite() {
+    var slides = track.querySelectorAll('.wbc-slide');
+    slides.forEach(function (slide) {
+      track.appendChild(slide.cloneNode(true));
+    });
+    halfWidth = track.scrollWidth / 2;
+    track.scrollLeft = 0;
   }
 
+  // Auto-scroll loop
+  function tick() {
+    if (!paused && !isDragging) {
+      track.scrollLeft += SPEED;
+      if (track.scrollLeft >= halfWidth) {
+        track.scrollLeft -= halfWidth;
+      }
+    }
+    requestAnimationFrame(tick);
+  }
+
+  // Pause on hover / touch
+  track.addEventListener('mouseenter', function () { paused = true; });
+  track.addEventListener('mouseleave', function () { paused = false; });
+  track.addEventListener('touchstart', function () { paused = true; }, { passive: true });
+  track.addEventListener('touchend', function () { paused = false; });
+
+  // Manual nav buttons
   btnPrev.addEventListener('click', function () {
     track.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
   });
-
   btnNext.addEventListener('click', function () {
     track.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
   });
 
-  track.addEventListener('scroll', updateButtons);
-  updateButtons();
+  // Hide buttons (infinite — both always visible)
+  btnPrev.classList.remove('hidden');
+  btnNext.classList.remove('hidden');
 
   // Drag to scroll
-  var isDragging = false;
-  var startX = 0;
-  var startScroll = 0;
-
   track.addEventListener('mousedown', function (e) {
     isDragging = true;
     startX = e.pageX;
     startScroll = track.scrollLeft;
     track.classList.add('dragging');
   });
-
   document.addEventListener('mousemove', function (e) {
     if (!isDragging) return;
     track.scrollLeft = startScroll - (e.pageX - startX);
   });
-
   document.addEventListener('mouseup', function () {
     isDragging = false;
     track.classList.remove('dragging');
@@ -239,6 +261,9 @@
   track.addEventListener('click', function (e) {
     if (Math.abs(track.scrollLeft - startScroll) > 5) e.preventDefault();
   }, true);
+
+  initInfinite();
+  requestAnimationFrame(tick);
 })();
 </script>
 
