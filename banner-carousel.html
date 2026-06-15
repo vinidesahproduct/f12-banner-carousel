@@ -22,7 +22,7 @@
       gap: 8px;
       width: max-content;
       will-change: transform;
-      animation: wbc-scroll 30s linear infinite;
+      animation: wbc-scroll 60s linear infinite;
       cursor: grab;
       touch-action: pan-y;
     }
@@ -399,11 +399,22 @@
     track.appendChild(clone);
   });
 
-  // Set duration based on content width for consistent speed (~30px/s)
-  requestAnimationFrame(function () {
-    var halfW = track.scrollWidth / 2;
-    DURATION = halfW / 30;
-    track.style.animationDuration = DURATION + 's';
+  // Recalculate duration after images load (avoids fast scroll on cold cache)
+  var origImgs = track.querySelectorAll('[data-index] img');
+  var toLoad = origImgs.length;
+  function onImgSettled() {
+    toLoad--;
+    if (toLoad <= 0) {
+      var halfW = track.scrollWidth / 2;
+      if (halfW > 200) {
+        DURATION = halfW / 30;
+        track.style.animationDuration = DURATION + 's';
+      }
+    }
+  }
+  Array.from(origImgs).forEach(function (img) {
+    if (img.complete) onImgSettled();
+    else { img.addEventListener('load', onImgSettled); img.addEventListener('error', onImgSettled); }
   });
 
   // Pause / resume helpers
