@@ -24,6 +24,7 @@
       will-change: transform;
       animation: wbc-scroll 30s linear infinite;
       cursor: grab;
+      touch-action: pan-y;
     }
     .wbc-track.paused  { animation-play-state: paused; }
     .wbc-track.dragging { cursor: grabbing; animation-play-state: paused; }
@@ -428,9 +429,35 @@
   track.addEventListener('mouseenter', pauseAnim);
   track.addEventListener('mouseleave', resumeAnim);
 
-  // Touch pause (mobile) — brief pause while finger is down; NOT during auto-scroll
-  track.addEventListener('touchstart', pauseAnim, { passive: true });
-  track.addEventListener('touchend',   resumeAnim);
+  // Touch swipe (mobile)
+  var tcStartX = 0;
+  var tcStartTX = 0;
+  var tcMoved = false;
+
+  track.addEventListener('touchstart', function (e) {
+    tcStartX  = e.touches[0].clientX;
+    tcStartTX = getCurrentTX();
+    tcMoved   = false;
+    pauseAnim();
+  }, { passive: true });
+
+  track.addEventListener('touchmove', function (e) {
+    var delta = e.touches[0].clientX - tcStartX;
+    if (Math.abs(delta) > 6) {
+      tcMoved = true;
+      track.style.transform = 'translateX(' + (tcStartTX + delta) + 'px)';
+    }
+  }, { passive: true });
+
+  track.addEventListener('touchend', function (e) {
+    var delta = e.changedTouches[0].clientX - tcStartX;
+    track.style.transform = '';
+    jumpTo(-tcStartTX - delta);
+    if (!tcMoved) {
+      var slide = e.target.closest('[data-index]');
+      if (slide) openStory(parseInt(slide.dataset.index, 10));
+    }
+  });
 
   // Nav buttons
   btnPrev.addEventListener('click', function () {
