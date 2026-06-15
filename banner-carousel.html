@@ -1,0 +1,257 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Banner Carousel</title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: transparent;
+      overflow: hidden;
+    }
+
+    #wbc {
+      position: relative;
+      width: 100%;
+    }
+
+    .wbc-wrapper {
+      overflow: hidden;
+      width: 100%;
+    }
+
+    .wbc-track {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      scroll-behavior: smooth;
+      scrollbar-width: none;
+      -ms-overflow-style: none;
+      touch-action: pan-x;
+      cursor: grab;
+    }
+
+    .wbc-track::-webkit-scrollbar {
+      display: none;
+    }
+
+    .wbc-track.dragging {
+      cursor: grabbing;
+      scroll-behavior: auto;
+    }
+
+    .wbc-slide {
+      flex: 0 0 auto;
+      width: calc(20% - 7px);
+    }
+
+    .wbc-slide a {
+      display: block;
+      text-decoration: none;
+    }
+
+    .wbc-slide img {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 50px;
+      border-radius: 4px;
+      pointer-events: none;
+    }
+
+    .wbc-btn {
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      border: none;
+      background: rgba(0, 0, 0, 0.5);
+      color: #fff;
+      cursor: pointer;
+      transition: background 0.2s, opacity 0.2s;
+    }
+
+    .wbc-btn:hover {
+      background: rgba(0, 0, 0, 0.85);
+    }
+
+    .wbc-btn.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    .wbc-prev { left: 4px; }
+    .wbc-next { right: 4px; }
+
+    @media (max-width: 1024px) {
+      .wbc-slide { width: calc(25% - 6px); }
+    }
+    @media (max-width: 768px) {
+      .wbc-slide { width: calc(33.333% - 6px); }
+    }
+    @media (max-width: 480px) {
+      .wbc-slide { width: calc(50% - 4px); }
+    }
+  </style>
+</head>
+<body>
+
+<div id="wbc">
+  <div class="wbc-wrapper">
+    <div class="wbc-track">
+
+      <div class="wbc-slide">
+        <a href="https://f12.bet.br/promotions/freebet-20" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/06/10.06-FREEBET-20-F12.jpg" alt="Freebet 20" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="https://f12.bet.br/promotions/selecao-gol-premiado" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/06/11.06-gol-premiado-f12.jpg" alt="Gol Premiado" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/indique-e-ganhe" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/indique-e-ganhe.png" alt="Indique e Ganhe" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/super-odds" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/5.Superodds.png" alt="Super Odds" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/cashout" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/3.Cashout.png" alt="Cashout" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/multipla-incomparavel" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/4.Multipla.png" alt="Múltipla Incomparável" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/antecipado-nba" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/6.Pagamento-Antecipado-basket.png" alt="Pagamento Antecipado NBA" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/pagamento-antecipado" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/1.Pagamento-Antecipado.png" alt="Pagamento Antecipado" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="https://f12.bet.br/sports/basquete/nba/c-2980" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/05/nba.png" alt="NBA" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/promotions/criar-aposta" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/04/2.Criar-Aposta.png" alt="Criar Aposta" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="/sports/futebol/brasileirao-serie-a/c-11318" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/05/1.Pagamento-Antecipado.png" alt="Brasileirão Série A" loading="lazy">
+        </a>
+      </div>
+
+      <div class="wbc-slide">
+        <a href="https://f12.bet.br/betting-terms" draggable="false">
+          <img src="https://f12promo.com/wp-content/uploads/2026/05/Termos.png" alt="Termos e Condições" loading="lazy">
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <button class="wbc-btn wbc-prev" aria-label="Anterior">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M10 4L6 8L10 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+
+  <button class="wbc-btn wbc-next" aria-label="Próximo">
+    <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <path d="M6 4L10 8L6 12" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+    </svg>
+  </button>
+</div>
+
+<script>
+(function () {
+  var track = document.querySelector('.wbc-track');
+  var btnPrev = document.querySelector('.wbc-prev');
+  var btnNext = document.querySelector('.wbc-next');
+
+  var SCROLL_AMOUNT = 300;
+
+  function updateButtons() {
+    btnPrev.classList.toggle('hidden', track.scrollLeft <= 2);
+    btnNext.classList.toggle('hidden', track.scrollLeft + track.clientWidth >= track.scrollWidth - 2);
+  }
+
+  btnPrev.addEventListener('click', function () {
+    track.scrollBy({ left: -SCROLL_AMOUNT, behavior: 'smooth' });
+  });
+
+  btnNext.addEventListener('click', function () {
+    track.scrollBy({ left: SCROLL_AMOUNT, behavior: 'smooth' });
+  });
+
+  track.addEventListener('scroll', updateButtons);
+  updateButtons();
+
+  // Drag to scroll
+  var isDragging = false;
+  var startX = 0;
+  var startScroll = 0;
+
+  track.addEventListener('mousedown', function (e) {
+    isDragging = true;
+    startX = e.pageX;
+    startScroll = track.scrollLeft;
+    track.classList.add('dragging');
+  });
+
+  document.addEventListener('mousemove', function (e) {
+    if (!isDragging) return;
+    track.scrollLeft = startScroll - (e.pageX - startX);
+  });
+
+  document.addEventListener('mouseup', function () {
+    isDragging = false;
+    track.classList.remove('dragging');
+  });
+
+  // Prevent link nav if dragged
+  track.addEventListener('click', function (e) {
+    if (Math.abs(track.scrollLeft - startScroll) > 5) e.preventDefault();
+  }, true);
+})();
+</script>
+
+</body>
+</html>
