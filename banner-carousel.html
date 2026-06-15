@@ -254,11 +254,13 @@
       flex: 0 0 auto;
       position: relative;
       height: 100px;
+      min-width: 60px;
       border-radius: 6px;
       overflow: hidden;
       cursor: pointer;
       border: 3px solid transparent;
       transition: border-color 0.2s;
+      background: #222;
     }
     .wbc-thumb.active { border-color: #fff; }
     .wbc-thumb img {
@@ -499,7 +501,7 @@
       thumb.className = 'wbc-thumb';
       thumb.dataset.index = i;
       var img = document.createElement('img');
-      img.src = b.src; img.alt = b.alt; img.loading = 'lazy';
+      img.src = b.src; img.alt = b.alt; img.loading = 'eager';
       var label = document.createElement('div');
       label.className = 'wbc-thumb-label';
       label.textContent = b.alt;
